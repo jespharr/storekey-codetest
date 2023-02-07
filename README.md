@@ -3,7 +3,6 @@ The task is to write functionality for calculating campaign price when a custome
 Campaigns based on product combination
 Campaigns based on volume, for example 2 for amount or 3 for x amount
 
-
 ## Combo campaigns
 For the combo campaign to work, the customer must combine a minimum of two products to get the campaign price. A combo campaign contains a list of products that the customer can combine, here is an example:
 
@@ -18,16 +17,16 @@ For the combo campaign to work, the customer must combine a minimum of two produ
 
 Here are some combination examples a customer can make, a product can be combined with itself.
 
-5000112637922 + 7310865004703 = 30
+5000112637922 + 7310865004703 = 30 \
 7310532109090 + 7611612222105 + 5000112637922 + 7310865004703 = 80
 
 Note: If the customer adds three products to their basket and all of them are in a campaign, the customer only pays the campaign price for two of them and will pay original price for the third product
 
-Volume campaigns
+## Volume campaigns
 The volume campaigns are based on number of items the customer needs to add to their basket to trigger the campaign price. For example, you can setup a campaign for Coca-Cola and the customer needs to buy two to get the campaign price.
 
-| EAN | Price | Minimum purchase quantity |
-|-----|-------|---------------------------|
+| EAN | Price | Quantity |
+|:----|:-----:|---------:|
 | 8711000530085 | 85 | 2 |
 | 7310865004703	| 20 | 2 |
 
