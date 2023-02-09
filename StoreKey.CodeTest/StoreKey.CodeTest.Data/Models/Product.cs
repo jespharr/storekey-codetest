@@ -6,5 +6,7 @@
         public string DisplayName { get; set; } = null!;
         public decimal Price { get; set; }
         public string? Ean13 { get; set; }
+
+        public override string ToString() => DisplayName;
     }
 }

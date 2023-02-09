@@ -31,5 +31,19 @@
             item.Edge = new Edge(this, item);
             _edges.Add(item.Edge);
         }
+
+        public void Disconnect()
+        {
+            foreach (var edge in _edges)
+            {
+                edge.ItemNode.Edge = null;
+            }
+
+            _edges.Clear();
+        }
+
+        public override string ToString() => IsConnected
+            ? $"{Campaign} (Connected)"
+            : $"{Campaign} (Not Connected)";
     }
 }

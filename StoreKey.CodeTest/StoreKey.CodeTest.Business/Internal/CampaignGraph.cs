@@ -14,20 +14,8 @@
 
             foreach (var campaign in campaigns)
             {
-                var candidates = itemNodes
-                    .Where(i => campaign.ProductIds.Contains(i.Product.Id))
-                    .ToArray();
-
-                var nodeCount = candidates.Length / campaign.Quantity;
-                for (var i = 0; i < nodeCount; i++)
-                {
-                    var node = new CampaignNode(campaign);
-                    foreach (var candidate in candidates)
-                    {
-                        node.Candidates.Add(candidate);
-                    }
-                    Nodes.Add(node);
-                }
+                var handler = CampaignNodeHandler.Get(campaign.Type);
+                Nodes.AddRange(handler.CreateNodes(campaign, itemNodes));
             }
         }
     }

@@ -4,6 +4,21 @@ namespace StoreKey.CodeTest.Business.Internal
 {
     internal class ComboCampaignNodeHandler : ICampaignNodeHandler
     {
+        public IEnumerable<CampaignNode> CreateNodes(Campaign campaign, IEnumerable<ItemNode> items)
+        {
+            var candidates = items
+                .Where(i => campaign.ProductIds.Contains(i.Product.Id))
+                .ToArray();
+
+            var nodeCount = candidates.Length / campaign.Quantity;
+            for (var i = 0; i < nodeCount; i++)
+            {
+                var node = new CampaignNode(campaign);
+                node.Candidates.AddRange(candidates);
+                yield return node;
+            }
+        }
+
         public bool TryConnect(CampaignNode node, out ICollection<Conflict> conflicts)
         {
             var eligible = node.Candidates.Where(c => c.Edge == null).ToArray();
@@ -37,7 +52,7 @@ namespace StoreKey.CodeTest.Business.Internal
             ICollection<ItemNode> blacklist,
             [NotNullWhen(true)] out ItemNode? alternative)
         {
-            alternative = edge.Campaign.Candidates
+            alternative = edge.CampaignNode.Candidates
                 .Where(i => i.Edge == null)
                 .Where(i => !blacklist.Contains(i))
                 .FirstOrDefault();

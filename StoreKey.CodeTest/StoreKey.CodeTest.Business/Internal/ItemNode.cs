@@ -9,5 +9,9 @@
         {
             Product = product;
         }
+
+        public override string ToString() => Edge == null
+            ? $"{Product} (Not Connected)"
+            : $"{Product} (Connected)";
     }
 }

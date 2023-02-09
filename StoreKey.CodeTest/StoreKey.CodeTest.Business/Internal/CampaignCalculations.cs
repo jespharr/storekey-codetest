@@ -6,25 +6,32 @@
         {
             var graph = new CampaignGraph(cart.Items, campaigns);
             var nodes = graph.Nodes
-                .OrderByDescending(x => x.Campaign.Value) // Highest value campaigns first to maximize odds of finding optimal solution
+                .OrderByDescending(x => x.Campaign.PriceReductionAmount) // Highest value campaigns first to maximize odds of finding optimal solution
                 .ThenBy(x => x.DegreesOfFreedom) // Followed by lowest degree of freedom to minimize movement of edges when trying to resolve conflicts (not sure if this is really useful...)
                 .ThenBy(x => x.Campaign.Quantity); // Lastly, by least number of items consumed to minimize the number of conflicts (probably?)
 
-            foreach (var node in nodes)
+            bool conflictResolved;
+            do
             {
-                var handler = GetHandler(node);
-                if (!handler.TryConnect(node, out var conflicts))
+                conflictResolved = false;
+                foreach (var node in nodes.Where(x => !x.IsConnected))
                 {
-                    foreach (var conflict in conflicts)
+                    var handler = CampaignNodeHandler.Get(node.Campaign.Type);
+                    if (!handler.TryConnect(node, out var conflicts))
                     {
-                        if (TryResolveConflict(conflict))
+                        foreach (var conflict in conflicts)
                         {
-                            handler.TryConnect(node, out _);
-                            break;
+                            if (TryResolveConflict(node.Campaign, conflict))
+                            {
+                                conflictResolved = true;
+                                handler.TryConnect(node, out _);
+                                break;
+                            }
                         }
                     }
                 }
             }
+            while (conflictResolved);
 
             return graph.Nodes
                 .GroupBy(n => n.Campaign)
@@ -32,12 +39,13 @@
                 .Where(a => a.Quantity > 0);
         }
 
-        private static bool TryResolveConflict(Conflict conflict)
+        private static bool TryResolveConflict(Campaign campaign, Conflict conflict)
         {
+            // See if edges can be moved around to "make room"
             var moved = 0;
             foreach (var edge in conflict.Edges)
             {
-                var handler = GetHandler(edge.Campaign);
+                var handler = CampaignNodeHandler.Get(edge.CampaignNode.Campaign.Type);
                 if (handler.TryFindAlternativeItem(edge, conflict.Blacklist, out var alternative))
                 {
                     edge.MoveTo(alternative);
@@ -48,16 +56,21 @@
                 }
             }
 
+            // See if we can replace an applied campaign with lower price reduction
+            var bestCandidate = conflict.Edges
+                .ToLookup(e => e.CampaignNode)
+                .Where(g => g.Count() >= conflict.Deficit)
+                .Select(g => g.Key)
+                .OrderBy(n => n.Campaign.PriceReductionAmount)
+                .FirstOrDefault();
+
+            if (bestCandidate != null && bestCandidate.Campaign.PriceReductionAmount < campaign.PriceReductionAmount)
+            {
+                bestCandidate.Disconnect();
+                return true;
+            }
+
             return false;
         }
-
-        private static readonly ICampaignNodeHandler _comboHandler = new ComboCampaignNodeHandler();
-        private static readonly ICampaignNodeHandler _amountHandler = new AmountCampaignNodeHandler();
-        private static ICampaignNodeHandler GetHandler(CampaignNode node) => node.Campaign.Type switch
-        {
-            CampaignType.Combo => _comboHandler,
-            CampaignType.Amount => _amountHandler,
-            _ => throw new NotSupportedException($"CampaignType {node.Campaign.Type} is not supported")
-        };
     }
 }
