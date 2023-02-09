@@ -19,14 +19,15 @@ namespace StoreKey.CodeTest.Business.Tests
                     TestCampaigns.ThreeForTwoKexchoklad,
                     TestCampaigns.TwoCoCo,
                     TestCampaigns.TwoMarabouProducts,
-                    TestCampaigns.FourCandyBars
+                    TestCampaigns.FourCandyBars,
+                    TestCampaigns.ThreeForTwoJapp
                 });
 
             _sut = new Checkout(repositoryMock.Object);
         }
 
         [Test]
-        public void Resolves_conflicts_prioritizing_highest_value()
+        public void Guarantee_lowest_total_price_1()
         {
             var cart = new ShoppingCart(
                 new ShoppingCartItem(TestProducts.Kexchoklad, 3),
@@ -51,6 +52,27 @@ namespace StoreKey.CodeTest.Business.Tests
                 }
             }, options => options.Excluding(i => i.DisplayText));
             result.Total.Should().Be(8.95m * 3 + 11.90m * 3 + 10.95m * 1 - 12m - 8.95m);
+        }
+
+        [Test]
+        public void Guarantee_lowest_total_price_2()
+        {
+            var cart = new ShoppingCart(
+                new ShoppingCartItem(TestProducts.Kexchoklad, 1),
+                new ShoppingCartItem(TestProducts.Japp, 6));
+
+            var result = _sut.CheckOut(cart);
+
+            result.CampaignItems.Should().BeEquivalentTo(new[]
+            {
+                new CampaignReceiptItem
+                {
+                    CampaignId = TestCampaigns.ThreeForTwoJapp.Id,
+                    Quantity = 2,
+                    Total = -21.90m
+                }
+            }, options => options.Excluding(i => i.DisplayText));
+            result.Total.Should().Be(8.95m * 1 + 10.95m * 6 - 21.90m);
         }
     }
 }
