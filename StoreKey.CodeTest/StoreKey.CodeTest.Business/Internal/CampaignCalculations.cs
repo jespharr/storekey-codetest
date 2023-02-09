@@ -26,9 +26,10 @@
                 }
             }
 
-            return nodes
+            return graph.Nodes
                 .GroupBy(n => n.Campaign)
-                .Select(g => new CampaignApplication(g.Key, g.Count(n => n.IsConnected)));
+                .Select(g => new CampaignApplication(g.Key, g.Count(n => n.IsConnected)))
+                .Where(a => a.Quantity > 0);
         }
 
         private static bool TryResolveConflict(Conflict conflict)
