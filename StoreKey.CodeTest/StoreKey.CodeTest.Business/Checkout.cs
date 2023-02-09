@@ -33,14 +33,16 @@ namespace StoreKey.CodeTest.Business
         {
             ProductId = item.Product.Id,
             Quantity = item.Quantity,
-            Total = item.Total
+            Total = item.Total,
+            DisplayText = $"{item.Quantity} x {item.Product.DisplayName} = {item.Total}"
         };
 
         private static CampaignReceiptItem ToReceiptItem(CampaignApplication application) => new()
         {
             CampaignId = application.Campaign.Id,
             Quantity = application.Quantity,
-            Total = application.Total
+            Total = application.Total,
+            DisplayText = $"{application.Quantity} x {application.Campaign.DisplayName} = {application.Total}"
         };
     }
 }

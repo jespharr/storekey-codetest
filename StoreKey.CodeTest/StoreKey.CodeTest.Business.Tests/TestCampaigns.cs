@@ -5,7 +5,7 @@
         public static readonly Campaign TwoCokeZero = new()
         {
             Id = Guid.NewGuid(),
-            DisplayName = "2 SEK off when buying two Coke Zero",
+            DisplayName = "Two Coke Zero",
             Type = CampaignType.Amount,
             PriceReductionAmount = 2,
             Quantity = 2,
@@ -60,13 +60,26 @@
         public static readonly Campaign ThreeForTwoKexchoklad = new()
         {
             Id = Guid.NewGuid(),
-            DisplayName = "Three Kexchoklad for two",
+            DisplayName = "3 for 2 Kexchoklad",
             Type = CampaignType.Amount,
             PriceReductionAmount = 8.95m,
             Quantity = 3,
             ProductIds = new List<Guid>
             {
                 TestProducts.Kexchoklad.Id
+            }
+        };
+
+        public static readonly Campaign ThreeForTwoJapp = new()
+        {
+            Id = Guid.NewGuid(),
+            DisplayName = "3 for 2 Japp",
+            Type = CampaignType.Amount,
+            PriceReductionAmount = 10.95m,
+            Quantity = 3,
+            ProductIds = new List<Guid>
+            {
+                TestProducts.Japp.Id
             }
         };
     }
