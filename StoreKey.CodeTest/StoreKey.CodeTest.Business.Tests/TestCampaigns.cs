@@ -49,7 +49,7 @@
             Id = Guid.NewGuid(),
             DisplayName = "Two Co-Co",
             Type = CampaignType.Amount,
-            PriceReductionAmount = 6,
+            PriceReductionAmount = 7,
             Quantity = 2,
             ProductIds = new List<Guid>
             {

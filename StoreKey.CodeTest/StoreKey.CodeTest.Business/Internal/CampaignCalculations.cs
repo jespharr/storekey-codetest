@@ -7,8 +7,8 @@
             var graph = new CampaignGraph(cart.Items, campaigns);
             var nodes = graph.Nodes
                 .OrderByDescending(x => x.Campaign.PriceReductionAmount) // Highest value campaigns first to maximize odds of finding optimal solution
-                .ThenBy(x => x.DegreesOfFreedom) // Followed by lowest degree of freedom to minimize movement of edges when trying to resolve conflicts (not sure if this is really useful...)
-                .ThenBy(x => x.Campaign.Quantity); // Lastly, by least number of items consumed to minimize the number of conflicts (probably?)
+                .ThenBy(x => x.Campaign.Quantity) // Followed by least number of items consumed (better total potential)
+                .ThenBy(x => x.DegreesOfFreedom); // Lastly, by lowest degree of freedom to minimize number of conflicts to resolve
 
             bool conflictResolved;
             do

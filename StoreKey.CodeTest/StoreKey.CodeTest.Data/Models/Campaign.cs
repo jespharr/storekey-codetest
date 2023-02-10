@@ -9,8 +9,6 @@
         public int Quantity { get; set; }
         public List<Guid> ProductIds { get; set; } = new List<Guid>();
 
-        public decimal Value => PriceReductionAmount / Quantity;
-
         public override string ToString() => $"{DisplayName}: -{PriceReductionAmount}";
     }
 }

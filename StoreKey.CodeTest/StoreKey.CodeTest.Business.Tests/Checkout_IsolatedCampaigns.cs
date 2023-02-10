@@ -75,10 +75,10 @@ namespace StoreKey.CodeTest.Business.Tests
                 {
                     CampaignId = TestCampaigns.TwoCoCo.Id,
                     Quantity = 1,
-                    Total = -6m
+                    Total = -7m
                 }
             }, options => options.Excluding(i => i.DisplayText));
-            result.Total.Should().Be(11.90m * 7 - 2m - 6m);
+            result.Total.Should().Be(11.90m * 7 - 2m - 7m);
         }
 
         [Test]
@@ -103,10 +103,10 @@ namespace StoreKey.CodeTest.Business.Tests
                 {
                     CampaignId = TestCampaigns.TwoCoCo.Id,
                     Quantity = 2,
-                    Total = -12m
+                    Total = -14m
                 }
             }, options => options.Excluding(i => i.DisplayText));
-            result.Total.Should().Be(11.90m * 11 - 4m - 12m);
+            result.Total.Should().Be(11.90m * 11 - 4m - 14m);
         }
     }
 }

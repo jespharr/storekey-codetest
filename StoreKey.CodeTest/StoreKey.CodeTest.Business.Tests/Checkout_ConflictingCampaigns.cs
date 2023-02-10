@@ -30,7 +30,7 @@ namespace StoreKey.CodeTest.Business.Tests
         public void Guarantee_lowest_total_price_1()
         {
             var cart = new ShoppingCart(
-                new ShoppingCartItem(TestProducts.Kexchoklad, 3),
+                new ShoppingCartItem(TestProducts.Kexchoklad, 3), // Attempting to trick FourCandyBars campaign into select Kexchoklad candidates by putting them first in the cart
                 new ShoppingCartItem(TestProducts.CoCo, 3),
                 new ShoppingCartItem(TestProducts.Japp, 1));
 
@@ -59,7 +59,7 @@ namespace StoreKey.CodeTest.Business.Tests
         {
             var cart = new ShoppingCart(
                 new ShoppingCartItem(TestProducts.Kexchoklad, 1),
-                new ShoppingCartItem(TestProducts.Japp, 6));
+                new ShoppingCartItem(TestProducts.CoCo, 6));
 
             var result = _sut.CheckOut(cart);
 
@@ -67,9 +67,9 @@ namespace StoreKey.CodeTest.Business.Tests
             {
                 new CampaignReceiptItem
                 {
-                    CampaignId = TestCampaigns.ThreeForTwoJapp.Id,
-                    Quantity = 2,
-                    Total = -21.90m
+                    CampaignId = TestCampaigns.TwoCoCo.Id,
+                    Quantity = 3,
+                    Total = -21m
                 }
             }, options => options.Excluding(i => i.DisplayText));
             result.Total.Should().Be(8.95m * 1 + 10.95m * 6 - 21.90m);

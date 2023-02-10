@@ -24,20 +24,30 @@ namespace StoreKey.CodeTest.Business.Internal
             var eligible = node.Candidates.Where(c => c.Edge == null).ToArray();
             if (eligible.Length < node.Campaign.Quantity)
             {
-                conflicts = new[]
+                var deficit = node.Campaign.Quantity - eligible.Length;
+                var potentiallyResolvable = node.Candidates
+                    .Select(i => i.Edge)
+                    .OfType<Edge>()
+                    .Where(e => e.CampaignNode.Campaign != node.Campaign)
+                    .ToArray();
+                
+                if (potentiallyResolvable.Length >= deficit)
                 {
-                    new Conflict(
-                        Deficit: node.Campaign.Quantity - eligible.Length,
-                        Edges: node.Candidates.Select(c => c.Edge).OfType<Edge>().ToArray(),
-                        Blacklist: node.Candidates)
-                };
+                    conflicts = new[]
+                    {
+                        new Conflict(deficit, potentiallyResolvable, node.Candidates)
+                    };
+                }
+                else
+                {
+                    conflicts = Array.Empty<Conflict>();
+                }
+
                 return false;
             }
             else
             {
-                foreach (var candidate in node.Candidates
-                    .Where(i => i.Edge == null)
-                    .Take(node.Campaign.Quantity))
+                foreach (var candidate in eligible.Take(node.Campaign.Quantity))
                 {
                     node.ConnectTo(candidate);
                 }
